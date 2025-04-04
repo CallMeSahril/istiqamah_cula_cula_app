@@ -11,10 +11,11 @@ class HomeController extends GetxController {
   void changeIndex(int index) {
     selectedIndex.value = index;
   }
+
   final List<Widget> pages = [
     BerandaPage(),
-    PemberitahuanPage(),
     PencarianPage(),
+    PemberitahuanPage(),
     ProfilePage(),
   ];
 }

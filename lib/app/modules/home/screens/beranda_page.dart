@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:istiqamah_cula_cula_app/app/routes/app_pages.dart';
 
 class BerandaPage extends StatelessWidget {
   @override
@@ -45,13 +47,18 @@ class BerandaPage extends StatelessWidget {
                 itemCount: 10,
                 itemBuilder: (context, index) => Column(
                   children: [
-                    Container(
-                        margin: EdgeInsets.all(10),
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                            color: Color(0xffD9D9D9), shape: BoxShape.circle),
-                        child: Icon(Icons.ac_unit)),
+                    GestureDetector(
+                      onTap: () {
+                        Get.toNamed(Routes.KATAGORI);
+                      },
+                      child: Container(
+                          margin: EdgeInsets.all(10),
+                          height: 50,
+                          width: 50,
+                          decoration: BoxDecoration(
+                              color: Color(0xffD9D9D9), shape: BoxShape.circle),
+                          child: Icon(Icons.ac_unit)),
+                    ),
                     Text("Kategori")
                   ],
                 ),
@@ -80,21 +87,37 @@ class BerandaPage extends StatelessWidget {
               ),
               itemCount: 10,
               itemBuilder: (context, index) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.image, size: 50, color: Colors.grey),
-                      SizedBox(height: 10),
-                      Text(
-                        "Produk ${index + 1}",
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                return GestureDetector(
+                  onTap: () {
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                            height: 150,
+                            child: Center(
+                                child: Icon(Icons.image,
+                                    size: 50, color: Colors.grey))),
+                        Text(
+                          "Zyva Sweater atasan wanita kerah jeans ${index + 1}",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          "Rp 100.000",
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -104,5 +127,4 @@ class BerandaPage extends StatelessWidget {
       ),
     );
   }
-  
 }

@@ -9,6 +9,7 @@ abstract class Routes {
   static const REGISTER = _Paths.REGISTER;
   static const PHONE_NUMBER = _Paths.PHONE_NUMBER;
   static const OTP = _Paths.OTP;
+  static const KATAGORI = _Paths.KATAGORI;
 }
 
 abstract class _Paths {
@@ -19,4 +20,5 @@ abstract class _Paths {
   static const REGISTER = '/register';
   static const PHONE_NUMBER = '/phone-number';
   static const OTP = '/otp';
+  static const KATAGORI = '/katagori';
 }

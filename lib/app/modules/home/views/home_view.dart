@@ -14,8 +14,9 @@ class HomeView extends GetView<HomeController> {
           () => BottomNavigationBar(
               currentIndex: controller.selectedIndex.value,
               onTap: controller.changeIndex,
-              selectedItemColor: Colors.blue,
-              unselectedItemColor: Colors.grey,
+                type: BottomNavigationBarType.fixed,
+              selectedItemColor: Color(0xffF90C0C),
+              unselectedItemColor: Color(0xffFE9564),
               items: [
                 BottomNavigationBarItem(
                     icon: Icon(Icons.home), label: "Beranda"),
