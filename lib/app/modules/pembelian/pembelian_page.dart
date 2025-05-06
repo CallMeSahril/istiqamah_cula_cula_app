@@ -31,9 +31,10 @@ class _PembelianPageState extends State<PembelianPage> {
   PaymentMethod? selectedPaymentMethod;
   Courier? selectedCourier;
   OngkirService? selectedService;
+int get subtotal =>
+    widget.carts.fold(0, (sum, item) => sum + ((item.product.price ?? 0) * item.quantity));
 
-  int get subtotal =>
-      widget.carts.fold(0, (sum, item) => sum + (item.product.price ?? 0));
+
   int get layanan => int.tryParse(selectedPaymentMethod?.totalFee ?? '0') ?? 0;
   int get ongkir => selectedService?.value ?? 0;
   int get total => subtotal + layanan + ongkir;
@@ -184,17 +185,16 @@ class _PembelianPageState extends State<PembelianPage> {
             }
 
             final body = {
-                "cart_ids": widget.carts.map((cart) => cart.cartId).toList(),
+              "cart_ids": widget.carts.map((cart) => cart.cartId).toList(),
               "method_pembayaran": selectedPaymentMethod!.paymentMethod,
               "ongkir": selectedService!.value,
               "address_id": selectedAddress!.id,
             };
 
-          final respone =   await ordersController.createOrder(body);
-          if (respone) {
-                        Get.offAll(PesananSuksesPage());
-
-          }
+            final respone = await ordersController.createOrder(body);
+            if (respone) {
+              Get.offAll(PesananSuksesPage());
+            }
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Color(0xffFF2B2A),

@@ -17,7 +17,6 @@ class HomeController extends GetxController {
     BerandaPage(),
     PencarianPage(),
     PemberitahuanPage(),
-    HistoryPage(),
     ProfilePage(),
   ];
 }

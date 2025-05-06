@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -58,13 +59,43 @@ class _DetailProdukPageState extends State<DetailProdukPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.network(
-              product!.image ?? '',
-              width: double.infinity,
-              height: 250,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Icon(Icons.broken_image, size: 100),
-            ),
+            product?.images != null && product!.images!.isNotEmpty
+                ? SizedBox(
+                    height: 500,
+                    child: PageView.builder(
+                      itemCount: product!.images!.length,
+                      itemBuilder: (context, index) {
+                        final url = product!.images![index].urlPhoto ?? '';
+                        return CachedNetworkImage(
+                          imageUrl: url,
+                          width: double.infinity,
+                          height: 500,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) =>
+                              Center(child: CircularProgressIndicator()),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.broken_image, size: 100),
+                        );
+                      },
+                    ),
+                  )
+                : SizedBox(
+                    height: 500,
+                    child: Center(
+                      child: product?.image != null
+                          ? CachedNetworkImage(
+                              imageUrl: product!.image!,
+                              width: double.infinity,
+                              height: 500,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) =>
+                                  Center(child: CircularProgressIndicator()),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.broken_image, size: 100),
+                            )
+                          : Icon(Icons.broken_image, size: 100),
+                    ),
+                  ),
             SizedBox(height: 16),
             Text(
               product!.name!.capitalize ?? '',

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:istiqamah_cula_cula_app/app/core/config/token.dart';
 import 'package:istiqamah_cula_cula_app/app/data/auth/controller/auth_controller.dart';
 import 'package:istiqamah_cula_cula_app/app/data/auth/model/profile_model.dart';
 import 'package:istiqamah_cula_cula_app/app/modules/cart/cart_page.dart';
+import 'package:istiqamah_cula_cula_app/app/modules/history/history_page.dart';
+import 'package:istiqamah_cula_cula_app/app/modules/pilih_alamat/pilih_alamat_page.dart';
+import 'package:istiqamah_cula_cula_app/app/routes/app_pages.dart';
 import 'package:istiqamah_cula_cula_app/app/widgets/button/custom_button.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -134,7 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   size: 16,
                 ),
                 onTap: () {
-                  // Add your action here
+                  Get.to(() => PilihAlamatPage());
                 },
               ),
               ListTile(
@@ -151,7 +155,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   size: 16,
                 ),
                 onTap: () {
-                  // Add your action here
+                  Get.to(
+                    HistoryPage(),
+                  );
                 },
               ),
               ListTile(
@@ -177,7 +183,8 @@ class _ProfilePageState extends State<ProfilePage> {
               CustomButton(
                 type: ButtonType.red,
                 onTap: () {
-                  // Add your action here
+                  AuthHelper.deleteToken();
+                  Get.offAllNamed(Routes.WELCOME);
                 },
                 text: "Keluar",
               ),

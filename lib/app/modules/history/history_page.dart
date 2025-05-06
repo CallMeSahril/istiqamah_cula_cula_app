@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:istiqamah_cula_cula_app/app/data/history/controllers/history_controller.dart';
 import 'package:istiqamah_cula_cula_app/app/data/orders/controller/orders_controller.dart';
 import 'package:istiqamah_cula_cula_app/app/data/orders/entities/order_entities.dart';
+import 'package:istiqamah_cula_cula_app/app/modules/history/order_detail_page.dart';
 
 class HistoryPage extends StatefulWidget {
   @override
@@ -90,12 +91,62 @@ class _HistoryPageState extends State<HistoryPage>
 
   Widget _orderCard(OrderEntities order) {
     final formatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ');
-    return Card(
-      margin: EdgeInsets.all(10),
-      child: ListTile(
-        title: Text("Order ID: ${order.id}"),
-        subtitle: Text("Status: ${order.status}\nTotal: ${formatter.format(order.totalAmount)}"),
-        isThreeLine: true,
+    return GestureDetector(
+      onTap: () {
+        Get.to(() => OrderDetailPage(order: order));
+      },
+      child: Card(
+        margin: EdgeInsets.all(10),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Order ID: ${order.id}",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text("Status: ${order.status}",
+                  style: TextStyle(color: Colors.grey[700])),
+              Text("Total: ${formatter.format(order.totalAmount)}",
+                  style: TextStyle(color: Colors.red)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildItemCard(Item item, NumberFormat formatter) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              item.product?.image ?? '',
+              width: 60,
+              height: 60,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Icon(Icons.broken_image, size: 60),
+            ),
+          ),
+          SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.product?.name ?? 'Produk tidak diketahui',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 4),
+                Text("Qty: ${item.quantity}"),
+                Text("Subtotal: ${formatter.format(item.subtotal ?? 0)}"),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

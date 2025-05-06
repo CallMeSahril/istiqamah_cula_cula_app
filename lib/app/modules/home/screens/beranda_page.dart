@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:istiqamah_cula_cula_app/app/core/utils/fungsi_format.dart';
 import 'package:istiqamah_cula_cula_app/app/data/product_category/controller/products_category_controller.dart';
 import 'package:istiqamah_cula_cula_app/app/data/product_category/entities/product_category_entities.dart';
@@ -8,7 +9,6 @@ import 'package:istiqamah_cula_cula_app/app/data/products/entities/product_entit
 import 'package:istiqamah_cula_cula_app/app/modules/cart/cart_page.dart';
 import 'package:istiqamah_cula_cula_app/app/modules/detail_produk/detail_produk_page.dart';
 import 'package:istiqamah_cula_cula_app/app/modules/katagori/views/katagori_view.dart';
-import 'package:istiqamah_cula_cula_app/app/routes/app_pages.dart';
 
 class BerandaPage extends StatefulWidget {
   @override
@@ -55,18 +55,17 @@ class _BerandaPageState extends State<BerandaPage> {
           ),
           child: TextField(
             decoration: InputDecoration(
-              fillColor: Colors.white,
               border: InputBorder.none,
-              hintStyle: TextStyle(color: Colors.white70),
+              hintText: "Cari produk...",
+              hintStyle: TextStyle(color: Colors.black38),
             ),
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.black),
           ),
         ),
         actions: [
           IconButton(
             icon: Icon(Icons.shopping_cart),
             onPressed: () {
-              // Add your cart action here
               Get.to(CartPage());
             },
           ),
@@ -77,9 +76,12 @@ class _BerandaPageState extends State<BerandaPage> {
         child: ListView(
           children: [
             Image.asset('assets/images/image.png'),
-            Text("Kategori",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            categories.length == 0
+            SizedBox(height: 10),
+            Text(
+              "Kategori",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            categories.isEmpty
                 ? Text("Tidak Ada Kategori")
                 : Container(
                     height: 100,
@@ -93,23 +95,20 @@ class _BerandaPageState extends State<BerandaPage> {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                Get.to(KatagoriView(
-                                  id: category.id,
-                                ));
+                                Get.to(KatagoriView(id: category.id));
                               },
                               child: Container(
                                 margin: EdgeInsets.all(10),
                                 height: 50,
                                 width: 50,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffD9D9D9),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: Icon(
-                                    Icons.category,
-                                    color: Colors.black,
-                                    size: 24,
+                                child: ClipOval(
+                                  child: CachedNetworkImage(
+                                    imageUrl: category.image ?? '',
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) =>
+                                        Icon(Icons.image),
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.broken_image),
                                   ),
                                 ),
                               ),
@@ -123,12 +122,14 @@ class _BerandaPageState extends State<BerandaPage> {
                       },
                     ),
                   ),
+            SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Produk",
-                    style:
-                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                Text(
+                  "Produk",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
                 Text(
                   "Lihat Semua",
                   style: TextStyle(color: Colors.red),
@@ -147,7 +148,6 @@ class _BerandaPageState extends State<BerandaPage> {
               itemCount: products.length > 10 ? 10 : products.length,
               itemBuilder: (context, index) {
                 final product = products[index];
-
                 return GestureDetector(
                   onTap: () {
                     Get.to(DetailProdukPage(id: product.id!));
@@ -160,29 +160,28 @@ class _BerandaPageState extends State<BerandaPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Gambar produk
-                        Container(
-                          height: 150,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.vertical(top: Radius.circular(10)),
-                            image: DecorationImage(
-                              image: NetworkImage(product.image ?? ''),
-                              fit: BoxFit.cover,
-                            ),
+                        ClipRRect(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(10)),
+                          child: CachedNetworkImage(
+                            imageUrl: product.image ?? '',
+                            height: 150,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) =>
+                                Center(child: Icon(Icons.image)),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.broken_image),
                           ),
                         ),
-                        // Spacer kecil
                         SizedBox(height: 8),
-                        // Expanded text content agar tidak overflow
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "${product.name?.capitalize}",
+                                product.name?.capitalize ?? '',
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -207,7 +206,7 @@ class _BerandaPageState extends State<BerandaPage> {
                   ),
                 );
               },
-            )
+            ),
           ],
         ),
       ),

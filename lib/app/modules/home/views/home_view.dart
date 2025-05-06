@@ -24,8 +24,7 @@ class HomeView extends GetView<HomeController> {
                     icon: Icon(Icons.search), label: "Pencarian"),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.notifications), label: "Pemberitahuan"),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.history), label: "History"),
+              
                 BottomNavigationBarItem(
                     icon: Icon(Icons.person), label: "Profile"),
               ]),
