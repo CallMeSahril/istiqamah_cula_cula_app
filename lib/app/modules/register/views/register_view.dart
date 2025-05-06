@@ -1,14 +1,33 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
+import 'package:istiqamah_cula_cula_app/app/data/auth/controller/auth_controller.dart';
 import 'package:istiqamah_cula_cula_app/app/routes/app_pages.dart';
 import 'package:istiqamah_cula_cula_app/app/widgets/button/custom_button.dart';
 import 'package:istiqamah_cula_cula_app/app/widgets/textfield/custom_text_form_field.dart';
 
-import '../controllers/register_controller.dart';
-
-class RegisterView extends GetView<RegisterController> {
+class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
+
+  @override
+  State<RegisterView> createState() => _RegisterViewState();
+}
+
+class _RegisterViewState extends State<RegisterView> {
+  final nameC = TextEditingController();
+  final emailC = TextEditingController();
+  final phoneC = TextEditingController();
+  final passwordC = TextEditingController();
+
+  final authC = Get.put(AuthController());
+  @override
+  void dispose() {
+    nameC.dispose();
+    emailC.dispose();
+    phoneC.dispose();
+    passwordC.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,34 +56,50 @@ class RegisterView extends GetView<RegisterController> {
             ),
             CustomTextFormField(
               title: 'Nama',
+              controller: nameC,
             ),
             SizedBox(
               height: 10,
             ),
             CustomTextFormField(
               title: 'Email',
+              controller: emailC,
             ),
-                SizedBox(
+            SizedBox(
               height: 10,
             ),
-              CustomTextFormField(
+            CustomTextFormField(
               title: 'No Telepon',
+              controller: phoneC,
             ),
-                SizedBox(
+            SizedBox(
               height: 10,
             ),
-              CustomTextFormField(
+            CustomTextFormField(
               title: 'Kata Sandi',
+              controller: passwordC,
+              obscureText: true,
             ),
-         
             SizedBox(
               height: 40,
             ),
             CustomButton(
               type: ButtonType.red,
               text: 'Sign Up',
-              onTap: () {
-                // Get.toNamed(Routes.LOGIN);
+              onTap: () async {
+                final success = await authC.register(
+                  name: nameC.text,
+                  email: emailC.text,
+                  password: passwordC.text,
+                  phone: phoneC.text,
+                );
+
+                if (success) {
+                  Get.snackbar("Berhasil", "Registrasi berhasil!");
+                  Get.toNamed(Routes.LOGIN);
+                } else {
+                  Get.snackbar("Gagal", "Registrasi gagal. Coba lagi.");
+                }
               },
             ),
             SizedBox(
