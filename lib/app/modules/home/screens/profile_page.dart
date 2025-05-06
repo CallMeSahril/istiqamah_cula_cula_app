@@ -6,6 +6,7 @@ import 'package:istiqamah_cula_cula_app/app/data/auth/model/profile_model.dart';
 import 'package:istiqamah_cula_cula_app/app/modules/cart/cart_page.dart';
 import 'package:istiqamah_cula_cula_app/app/modules/history/history_page.dart';
 import 'package:istiqamah_cula_cula_app/app/modules/pilih_alamat/pilih_alamat_page.dart';
+import 'package:istiqamah_cula_cula_app/app/modules/profile/edit_profile_page.dart';
 import 'package:istiqamah_cula_cula_app/app/routes/app_pages.dart';
 import 'package:istiqamah_cula_cula_app/app/widgets/button/custom_button.dart';
 
@@ -77,12 +78,14 @@ class _ProfilePageState extends State<ProfilePage> {
                         width: 50,
                         height: 50,
                         decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(25),
-                          // image: DecorationImage(image: )
-                        ),
-                        child:
-                            Icon(Icons.person, size: 30, color: Colors.white),
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(25),
+                            image: DecorationImage(
+                                image: NetworkImage(profile.image ?? ''),
+                                fit: BoxFit.cover)),
+                        child: profile.image == null
+                            ? Icon(Icons.person, size: 30, color: Colors.white)
+                            : null,
                       ),
                       SizedBox(
                         width: 10,
@@ -109,11 +112,11 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               ListTile(
                 leading: Icon(
-                  Icons.lock,
+                  Icons.person,
                   size: 24,
                 ),
                 title: Text(
-                  "Ubah Kata Sandi",
+                  "Edit Profile",
                   style: TextStyle(fontWeight: FontWeight.w500),
                 ),
                 trailing: Icon(
@@ -121,7 +124,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   size: 16,
                 ),
                 onTap: () {
-                  // Add your action here
+                  Get.to(EditProfilePage());
                 },
               ),
               ListTile(

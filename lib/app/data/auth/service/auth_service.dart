@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:istiqamah_cula_cula_app/app/core/api_helper/api_helper.dart';
 import 'package:istiqamah_cula_cula_app/app/core/config/token.dart';
 import 'package:istiqamah_cula_cula_app/app/core/errors/failure.dart';
@@ -89,70 +92,57 @@ class AuthService {
       return Left(ServerFailure(e.toString()));
     }
   }
-  // Future<Either<Failure, List<OrderStatusEntities>>> getPendingOrder(
-  //     {required OrderStatus status}) async {
-  //   final isConnected = await NetworkChecker.isConnected();
-  //   if (!isConnected) return Left(NoConnectionFailure());
 
-  //   final isSlow = await NetworkChecker.isConnectionSlow();
-  //   if (isSlow) return Left(SlowConnectionFailure());
-  //   String statusValue = '';
-  //   switch (status) {
-  //     case OrderStatus.pending:
-  //       statusValue = 'pending';
+  Future<Either<Failure, bool>> updateProfile({
+    required String name,
+    required String email,
+    required String phone,
+    String? password,
+    File? image,
+  }) async {
+    final isConnected = await NetworkChecker.isConnected();
+    if (!isConnected) return Left(NoConnectionFailure());
 
-  //       break;
-  //     case OrderStatus.packing:
-  //       statusValue = 'packing';
+    final isSlow = await NetworkChecker.isConnectionSlow();
+    if (isSlow) return Left(SlowConnectionFailure());
 
-  //       break;
-  //     case OrderStatus.delivering:
-  //       statusValue = 'delivering';
+    try {
+      final formData = FormData();
 
-  //       break;
-  //     default:
-  //       statusValue = 'pending';
-  //   }
-  //   try {
-  //     final response = await apiHelper.get(
-  //       '/orders/$statusValue',
-  //     );
+      formData.fields
+        ..add(MapEntry('name', name))
+        ..add(MapEntry('email', email))
+        ..add(MapEntry('phone', phone));
 
-  //     if (response.data == null || response.data['data'] == null) {
-  //       return Left(ServerFailure("Data tidak ditemukan"));
-  //     }
+      if (password != null && password.isNotEmpty) {
+        formData.fields.add(MapEntry('password', password));
+      }
 
-  //     final data = response.data['data'] as List;
-  //     final result =
-  //         data.map((item) => OrderStatusEntities.fromJson(item)).toList();
-  //     return Right(result);
-  //   } catch (e) {
-  //     return Left(ServerFailure(e.toString()));
-  //   }
-  // }
+      if (image != null) {
+        final fileName = image.path.split('/').last;
+        formData.files.add(MapEntry(
+          'image',
+          await MultipartFile.fromFile(image.path, filename: fileName),
+        ));
+      }
 
-  // Future<Either<Failure, List<HistoryEntities>>> getHistory() async {
-  //   final isConnected = await NetworkChecker.isConnected();
-  //   if (!isConnected) return Left(NoConnectionFailure());
+      final response = await _apiHelper.post(
+        '/me/update', // sesuaikan endpoint kamu
+        data: formData,
+      );
 
-  //   final isSlow = await NetworkChecker.isConnectionSlow();
-  //   if (isSlow) return Left(SlowConnectionFailure());
+      if (response.data == null) {
+        return Left(ServerFailure("Tidak ada respon dari server"));
+      }
 
-  //   try {
-  //     final response = await apiHelper.get(
-  //       '/history',
-  //     );
-
-  //     if (response.data == null || response.data['data'] == null) {
-  //       return Left(ServerFailure("Data tidak ditemukan"));
-  //     }
-
-  //     final data = response.data['data'] as List;
-  //     final result =
-  //         data.map((item) => HistoryEntities.fromJson(item)).toList();
-  //     return Right(result);
-  //   } catch (e) {
-  //     return Left(ServerFailure(e.toString()));
-  //   }
-  // }
+      final meta = response.data['meta'];
+      if (meta['code'] == 200) {
+        return Right(true);
+      } else {
+        return Left(ServerFailure(meta['message'] ?? "Gagal update profil"));
+      }
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }

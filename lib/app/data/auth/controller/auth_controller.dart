@@ -1,14 +1,18 @@
+import 'dart:io';
+
 import 'package:get/get.dart';
 import 'package:istiqamah_cula_cula_app/app/core/errors/failure.dart';
 import 'package:istiqamah_cula_cula_app/app/data/auth/model/profile_model.dart';
 import 'package:istiqamah_cula_cula_app/app/data/auth/usescases/get_profile.dart';
 import 'package:istiqamah_cula_cula_app/app/data/auth/usescases/post_login.dart';
 import 'package:istiqamah_cula_cula_app/app/data/auth/usescases/post_register.dart';
+import 'package:istiqamah_cula_cula_app/app/data/auth/usescases/update_profile.dart';
 
 class AuthController extends GetxController {
   final PostLogin _postLogin = PostLogin();
   final PostRegister _postRegister = PostRegister();
   final GetProfile _getProfile = GetProfile();
+  final UpdateProfile _updateProfile = UpdateProfile();
 
   // ✅ Login
   Future<bool> login({
@@ -79,6 +83,35 @@ class AuthController extends GetxController {
       (profile) async {
         return profile;
       },
+    );
+  }
+
+  Future<bool> updateProfile({
+    required String name,
+    required String email,
+    required String phone,
+    String? password,
+    File? image,
+  }) async {
+    final result = await _updateProfile.call(
+      name: name,
+      email: email,
+      phone: phone,
+      password: password,
+      image: image,
+    );
+
+    return result.fold(
+      (failure) {
+        final message = switch (failure) {
+          NoConnectionFailure() => 'Tidak ada koneksi internet',
+          SlowConnectionFailure() => 'Koneksi lambat',
+          _ => failure.message ?? 'Gagal update profil',
+        };
+        Get.snackbar("Error", message);
+        return false;
+      },
+      (_) => true,
     );
   }
 }
