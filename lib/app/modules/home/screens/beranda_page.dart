@@ -9,6 +9,7 @@ import 'package:istiqamah_cula_cula_app/app/data/products/entities/product_entit
 import 'package:istiqamah_cula_cula_app/app/modules/cart/cart_page.dart';
 import 'package:istiqamah_cula_cula_app/app/modules/detail_produk/detail_produk_page.dart';
 import 'package:istiqamah_cula_cula_app/app/modules/katagori/views/katagori_view.dart';
+import 'package:istiqamah_cula_cula_app/app/modules/lihat_semua_produk/semua_produk_page.dart';
 
 class BerandaPage extends StatefulWidget {
   @override
@@ -130,9 +131,14 @@ class _BerandaPageState extends State<BerandaPage> {
                   "Produk",
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                Text(
-                  "Lihat Semua",
-                  style: TextStyle(color: Colors.red),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(SemuaProdukPage());
+                  },
+                  child: Text(
+                    "Lihat Semua",
+                    style: TextStyle(color: Colors.red),
+                  ),
                 )
               ],
             ),
