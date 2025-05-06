@@ -7,6 +7,9 @@ import 'package:istiqamah_cula_cula_app/app/data/orders/entities/order_entities.
 import 'package:istiqamah_cula_cula_app/app/modules/history/order_detail_page.dart';
 
 class HistoryPage extends StatefulWidget {
+  final int initialStatusIndex;
+
+  HistoryPage({this.initialStatusIndex = 0}); // default tab: pending
   @override
   State<HistoryPage> createState() => _HistoryPageState();
 }
@@ -28,7 +31,11 @@ class _HistoryPageState extends State<HistoryPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: tabs.length, vsync: this);
-    _loadTabData(0);
+
+    // Set tab aktif sesuai parameter
+    _tabController.index = widget.initialStatusIndex;
+
+    _loadTabData(widget.initialStatusIndex);
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
         _loadTabData(_tabController.index);

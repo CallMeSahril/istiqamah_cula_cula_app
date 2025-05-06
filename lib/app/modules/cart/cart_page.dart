@@ -79,6 +79,7 @@ class _CartPageState extends State<CartPage> {
                   ),
                   Row(
                     children: [
+                      // Tombol - (kurang jumlah)
                       Container(
                         width: 32,
                         height: 32,
@@ -88,7 +89,8 @@ class _CartPageState extends State<CartPage> {
                         ),
                         child: IconButton(
                           padding: EdgeInsets.zero,
-                          icon: Icon(Icons.remove, size: 18, color: Colors.white),
+                          icon:
+                              Icon(Icons.remove, size: 18, color: Colors.white),
                           onPressed: cart.quantity > 1
                               ? () => controller.updateQuantity(
                                   cartId: cart.cartId,
@@ -97,9 +99,13 @@ class _CartPageState extends State<CartPage> {
                         ),
                       ),
                       SizedBox(width: 8),
+
+                      // Jumlah item
                       Text(cart.quantity.toString(),
                           style: TextStyle(fontSize: 16)),
                       SizedBox(width: 8),
+
+                      // Tombol + (tambah jumlah)
                       Container(
                         width: 32,
                         height: 32,
@@ -111,8 +117,26 @@ class _CartPageState extends State<CartPage> {
                           padding: EdgeInsets.zero,
                           icon: Icon(Icons.add, size: 18, color: Colors.white),
                           onPressed: () => controller.updateQuantity(
-                              cartId: cart.cartId,
-                              quantity: cart.quantity + 1),
+                              cartId: cart.cartId, quantity: cart.quantity + 1),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+
+                      // 🗑️ Tombol Hapus
+                      Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: Colors.red.shade400,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: IconButton(
+                          padding: EdgeInsets.zero,
+                          icon:
+                              Icon(Icons.delete, size: 18, color: Colors.white),
+                          onPressed: () {
+                            controller.removeCart(cart.cartId);
+                          },
                         ),
                       ),
                     ],
