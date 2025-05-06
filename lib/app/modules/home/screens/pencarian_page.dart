@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:istiqamah_cula_cula_app/app/data/products/controller/products_controller.dart';
 import 'package:istiqamah_cula_cula_app/app/data/products/entities/product_entities.dart';
 import 'package:istiqamah_cula_cula_app/app/modules/cart/cart_page.dart';
+import 'package:istiqamah_cula_cula_app/app/modules/detail_produk/detail_produk_page.dart';
 
 class PencarianPage extends StatefulWidget {
   @override
@@ -53,7 +54,7 @@ class _PencarianPageState extends State<PencarianPage> {
           IconButton(
             icon: Icon(Icons.shopping_cart_outlined),
             onPressed: () {
-               Get.to(CartPage());
+              Get.to(CartPage());
               // Add your cart action here
             },
           ),
@@ -95,38 +96,43 @@ class _PencarianPageState extends State<PencarianPage> {
                 itemCount: searchResults.length,
                 itemBuilder: (context, index) {
                   final product = searchResults[index];
-                  return Container(
-                    margin: EdgeInsets.all(10),
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[50],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      children: [
-                        Image.network(
-                          product.image ?? '',
-                          width: 50,
-                          height: 50,
-                          errorBuilder: (_, __, ___) =>
-                              Icon(Icons.image, size: 50, color: Colors.grey),
-                        ),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(product.name ?? '',
-                                  style: TextStyle(fontSize: 16)),
-                              Text(
-                                formatter.format(product.price ?? 0),
-                                style: TextStyle(
-                                    fontSize: 12, color: Color(0xff51B1A6)),
-                              ),
-                            ],
+                  return GestureDetector(
+                    onTap: () {
+                      Get.to(DetailProdukPage(id: product.id!));
+                    },
+                    child: Container(
+                      margin: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[50],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        children: [
+                          Image.network(
+                            product.image ?? '',
+                            width: 50,
+                            height: 50,
+                            errorBuilder: (_, __, ___) =>
+                                Icon(Icons.image, size: 50, color: Colors.grey),
                           ),
-                        ),
-                      ],
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(product.name ?? '',
+                                    style: TextStyle(fontSize: 16)),
+                                Text(
+                                  formatter.format(product.price ?? 0),
+                                  style: TextStyle(
+                                      fontSize: 12, color: Color(0xff51B1A6)),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
