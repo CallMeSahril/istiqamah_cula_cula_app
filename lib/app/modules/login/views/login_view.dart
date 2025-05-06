@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:istiqamah_cula_cula_app/app/core/config/token.dart';
+import 'package:istiqamah_cula_cula_app/app/data/auth/controller/auth_controller.dart';
 import 'package:istiqamah_cula_cula_app/app/routes/app_pages.dart';
 import 'package:istiqamah_cula_cula_app/app/widgets/button/custom_button.dart';
 import 'package:istiqamah_cula_cula_app/app/widgets/textfield/custom_text_form_field.dart';
 
-import '../controllers/login_controller.dart';
-
-class LoginView extends GetView<LoginController> {
+class LoginView extends StatefulWidget {
   const LoginView({super.key});
+
+  @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
+  final emailC = TextEditingController();
+  final passwordC = TextEditingController();
+
+  final authC = Get.put(AuthController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,12 +38,16 @@ class LoginView extends GetView<LoginController> {
             ),
             CustomTextFormField(
               title: 'Email',
+              controller: emailC,
+              keyboardType: TextInputType.emailAddress,
             ),
             SizedBox(
               height: 10,
             ),
             CustomTextFormField(
               title: 'Kata Sandi',
+              controller: passwordC,
+              obscureText: true,
             ),
             Text(
               "Lupa kata sandi?",
@@ -45,8 +59,18 @@ class LoginView extends GetView<LoginController> {
             CustomButton(
               type: ButtonType.red,
               text: 'LOGIN',
-              onTap: () {
-                Get.offAllNamed(Routes.HOME);
+              onTap: () async {
+                final success = await authC.login(
+                  email: emailC.text,
+                  password: passwordC.text,
+                );
+
+                if (success) {
+                  
+                  Get.offAllNamed(Routes.HOME);
+                } else {
+                  Get.snackbar("Login Gagal", "Email atau kata sandi salah!");
+                }
               },
             ),
             SizedBox(
@@ -87,9 +111,12 @@ class LoginView extends GetView<LoginController> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [Text("Belum punya akun?"), GestureDetector(
-                onTap: () => Get.toNamed(Routes.REGISTER),
-                child: Text("Daftar"))],
+              children: [
+                Text("Belum punya akun?"),
+                GestureDetector(
+                    onTap: () => Get.toNamed(Routes.REGISTER),
+                    child: Text("Daftar"))
+              ],
             ),
           ],
         ),

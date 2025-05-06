@@ -13,15 +13,21 @@ class OrdersController extends GetxController {
   RxList<PaymentMethod> paymentMethods = <PaymentMethod>[].obs;
   RxBool isLoading = false.obs;
 
-  Future<void> createOrder(Map<String, dynamic> body) async {
+  Future<bool> createOrder(Map<String, dynamic> body) async {
     isLoading.value = true;
     final result = await createOrderUsecase(body);
+    bool isSuccess = false;
     result.fold(
-      (failure) =>
-          Get.snackbar("Gagal", failure.message ?? "Terjadi kesalahan"),
-      (data) => Get.snackbar("Berhasil", "Order dibuat dengan ID: \$data"),
+      (failure) {
+        Get.snackbar("Gagal", failure.message ?? "Terjadi kesalahan");
+      },
+      (data) {
+        Get.snackbar("Berhasil", "Order dibuat dengan ID: $data");
+        isSuccess = true;
+      },
     );
     isLoading.value = false;
+    return isSuccess;
   }
 
   Future<void> loadOrders(String status) async {

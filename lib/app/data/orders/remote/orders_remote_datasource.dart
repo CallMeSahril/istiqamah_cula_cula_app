@@ -16,7 +16,8 @@ class OrdersRemoteDatasource {
     }
   }
 
-  Future<Either<Failure, List<OrderEntities>>> getOrdersByStatus(String status) async {
+  Future<Either<Failure, List<OrderEntities>>> getOrdersByStatus(
+      String status) async {
     try {
       final response = await apiHelper.get('/orders/$status');
       final data = response.data['data'] as List;
@@ -27,9 +28,10 @@ class OrdersRemoteDatasource {
     }
   }
 
-  Future<Either<Failure, List<PaymentMethod>>> getPaymentMethods(int amount) async {
+  Future<Either<Failure, List<PaymentMethod>>> getPaymentMethods(
+      int amount) async {
     try {
-      final response = await apiHelper.post('/payment-method', data: {
+      final response = await apiHelper.post('/duitku/get-payment', data: {
         'paymentAmount': amount,
       });
       final data = response.data['data']['paymentFee'] as List;
@@ -40,7 +42,8 @@ class OrdersRemoteDatasource {
     }
   }
 
-  Future<Either<Failure, bool>> checkPaymentStatus(String merchantOrderId) async {
+  Future<Either<Failure, bool>> checkPaymentStatus(
+      String merchantOrderId) async {
     try {
       final response = await apiHelper.post('/check-payment', data: {
         'merchant_order_id': merchantOrderId,

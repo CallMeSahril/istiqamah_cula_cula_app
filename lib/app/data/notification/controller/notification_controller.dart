@@ -3,8 +3,7 @@ import 'package:istiqamah_cula_cula_app/app/data/notification/entities/notificat
 import 'package:istiqamah_cula_cula_app/app/data/notification/usescases/get_notifications.dart';
 
 class NotificationController extends GetxController {
-  final GetNotifications _getNotifications;
-  NotificationController(this._getNotifications);
+  final GetNotifications _getNotifications = GetNotifications();
 
   RxList<NotificationEntities> notifications = <NotificationEntities>[].obs;
   RxBool isLoading = false.obs;

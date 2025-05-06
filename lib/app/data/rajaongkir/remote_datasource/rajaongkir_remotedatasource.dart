@@ -11,7 +11,7 @@ class RajaOngkirRemoteDataSource {
 
   Future<Either<Failure, List<Province>>> getProvinces() async {
     try {
-      final res = await apiHelper.get('/rajaongkir/provinces');
+      final res = await apiHelper.get('/provinces');
       final data = res.data['data'] as List;
       final result = data.map((e) => Province.fromJson(e)).toList();
       return Right(result);
@@ -22,7 +22,7 @@ class RajaOngkirRemoteDataSource {
 
   Future<Either<Failure, List<City>>> getCities(int provinceId) async {
     try {
-      final res = await apiHelper.get('/rajaongkir/cities/$provinceId');
+      final res = await apiHelper.get('/cities/$provinceId');
       final data = res.data['data'] as List;
       final result = data.map((e) => City.fromJson(e)).toList();
       return Right(result);
@@ -33,7 +33,7 @@ class RajaOngkirRemoteDataSource {
 
   Future<Either<Failure, List<Courier>>> getCouriers() async {
     try {
-      final res = await apiHelper.get('/rajaongkir/couriers');
+      final res = await apiHelper.get('/available-couriers');
       final data = res.data['data'] as Map<String, dynamic>;
       final result =
           data.entries.map((e) => Courier(code: e.key, name: e.value)).toList();
@@ -50,7 +50,7 @@ class RajaOngkirRemoteDataSource {
     required String courier,
   }) async {
     try {
-      final res = await apiHelper.post('/rajaongkir/ongkir', data: {
+      final res = await apiHelper.post('/check-shipping-cost', data: {
         'origin': origin,
         'destination': destination,
         'weight': weight,

@@ -4,8 +4,8 @@ import 'package:istiqamah_cula_cula_app/app/data/notification/entities/notificat
 import 'package:istiqamah_cula_cula_app/app/data/notification/remotedatasource/notification_remotedatasource.dart';
 
 class GetNotifications {
-  final NotificationRemoteDataSource dataSource;
-  GetNotifications(this.dataSource);
+  final NotificationRemoteDataSource dataSource =
+      NotificationRemoteDataSource();
 
   Future<Either<Failure, List<NotificationEntities>>> call() async {
     return await dataSource.getNotifications();

@@ -53,10 +53,6 @@ class AppPages {
       page: () => const OtpView(),
       binding: OtpBinding(),
     ),
-    GetPage(
-      name: _Paths.KATAGORI,
-      page: () => const KatagoriView(),
-      binding: KatagoriBinding(),
-    ),
+   
   ];
 }

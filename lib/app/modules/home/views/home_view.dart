@@ -14,7 +14,7 @@ class HomeView extends GetView<HomeController> {
           () => BottomNavigationBar(
               currentIndex: controller.selectedIndex.value,
               onTap: controller.changeIndex,
-                type: BottomNavigationBarType.fixed,
+              type: BottomNavigationBarType.fixed,
               selectedItemColor: Color(0xffF90C0C),
               unselectedItemColor: Color(0xffFE9564),
               items: [
@@ -24,6 +24,8 @@ class HomeView extends GetView<HomeController> {
                     icon: Icon(Icons.search), label: "Pencarian"),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.notifications), label: "Pemberitahuan"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.history), label: "History"),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.person), label: "Profile"),
               ]),

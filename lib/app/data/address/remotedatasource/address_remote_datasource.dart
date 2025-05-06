@@ -29,7 +29,7 @@ class AddressRemoteDataSource {
   Future<Either<Failure, bool>> updateAddress(
       int id, AddressEntities address) async {
     try {
-      await apiHelper.post('/addresses/$id',
+      await apiHelper.post('/addresses/$id/update',
           data: address.toJson()); // pakai post seperti yang kamu minta
       return Right(true);
     } catch (e) {

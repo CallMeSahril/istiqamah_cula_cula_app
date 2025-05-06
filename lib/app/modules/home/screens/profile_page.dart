@@ -1,17 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:istiqamah_cula_cula_app/app/data/auth/controller/auth_controller.dart';
+import 'package:istiqamah_cula_cula_app/app/data/auth/model/profile_model.dart';
+import 'package:istiqamah_cula_cula_app/app/modules/cart/cart_page.dart';
 import 'package:istiqamah_cula_cula_app/app/widgets/button/custom_button.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final AuthController _authController = Get.put(AuthController());
+
+  ProfileEntities profile = ProfileEntities(); // Default kosong
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProfile();
+  }
+
+  void fetchProfile() async {
+    final result = await _authController.getProfile();
+    if (!mounted) return;
+    setState(() {
+      profile = result;
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Color(0xffFF2B2A),
           centerTitle: true,
           title: Text(
-            "Pemberitahuan",
+            "Profile",
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -21,6 +54,7 @@ class ProfilePage extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.shopping_cart_outlined),
               onPressed: () {
+                Get.to(CartPage());
                 // Add your cart action here
               },
             ),
@@ -35,7 +69,20 @@ class ProfilePage extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.image, size: 50),
+                      Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(25),
+                          // image: DecorationImage(image: )
+                        ),
+                        child:
+                            Icon(Icons.person, size: 30, color: Colors.white),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
                       Container(
                         padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
@@ -43,7 +90,7 @@ class ProfilePage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
-                          "UNKNOWN",
+                          profile.name?.toUpperCase() ?? 'UNKNOWN',
                           style: TextStyle(
                               color: Colors.white, fontWeight: FontWeight.bold),
                         ),
@@ -134,7 +181,6 @@ class ProfilePage extends StatelessWidget {
                 },
                 text: "Keluar",
               ),
-            
             ],
           ),
         ));

@@ -1,13 +1,30 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
+import 'package:istiqamah_cula_cula_app/app/core/config/token.dart';
 import 'package:istiqamah_cula_cula_app/app/routes/app_pages.dart';
 import 'package:istiqamah_cula_cula_app/app/widgets/button/custom_button.dart';
 
-import '../controllers/welcome_controller.dart';
-
-class WelcomeView extends GetView<WelcomeController> {
+class WelcomeView extends StatefulWidget {
   const WelcomeView({super.key});
+
+  @override
+  State<WelcomeView> createState() => _WelcomeViewState();
+}
+
+class _WelcomeViewState extends State<WelcomeView> {
+  @override
+  void initState() {
+    super.initState();
+    _checkAuthToken();
+  }
+
+  void _checkAuthToken() async {
+    final token = await AuthHelper.getToken();
+    if (token != null) {
+      Get.offAllNamed(Routes.HOME);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:istiqamah_cula_cula_app/app/core/api_helper/api_helper.dart';
+import 'package:istiqamah_cula_cula_app/app/core/config/token.dart';
 import 'package:istiqamah_cula_cula_app/app/core/errors/failure.dart';
 import 'package:istiqamah_cula_cula_app/app/core/utils/network_checker.dart';
 import 'package:istiqamah_cula_cula_app/app/data/auth/model/profile_model.dart';
@@ -26,6 +27,11 @@ class AuthService {
       }
 
       final result = response.data['meta']['code'] == 200;
+      final refreshToken =
+          "${response.data['data']['token_type']} ${response.data['data']['access_token']}";
+      final authStorage = await AuthStorage.getInstance();
+      await authStorage.saveToken(refreshToken);
+
       return Right(result);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
