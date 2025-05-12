@@ -5,6 +5,7 @@ class CustomTextFormField extends StatelessWidget {
   final TextEditingController? controller;
   final bool obscureText;
   final TextInputType keyboardType;
+  final bool readOnly;
   final String? Function(String?)? validator;
 
   const CustomTextFormField({
@@ -12,6 +13,7 @@ class CustomTextFormField extends StatelessWidget {
     required this.title,
     this.controller,
     this.obscureText = false,
+    this.readOnly = false,
     this.keyboardType = TextInputType.text,
     this.validator,
   });
@@ -30,6 +32,7 @@ class CustomTextFormField extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         TextFormField(
+          readOnly:readOnly  ,
           controller: controller,
           obscureText: obscureText,
           keyboardType: keyboardType,
