@@ -8,7 +8,7 @@ class BannerController extends GetxController {
   final GetIklan _getIklan = GetIklan();
 
   var bannerList = <BannerEntities>[].obs;
-  var iklanList = <BannerEntities>[].obs;
+  var iklanList = BannerEntities().obs;
 
   Future<void> fetchBanners() async {
     final result = await _getBanner.call();

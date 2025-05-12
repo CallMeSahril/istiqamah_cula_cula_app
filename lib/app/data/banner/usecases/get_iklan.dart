@@ -6,7 +6,7 @@ import 'package:istiqamah_cula_cula_app/app/data/banner/service/banner_service.d
 class GetIklan {
   final BannerService _repository = BannerService();
 
-  Future<Either<Failure, List<BannerEntities>>> call() {
+  Future<Either<Failure, BannerEntities>> call() {
     return _repository.getIklan();
   }
 }

@@ -24,6 +24,19 @@ class BannerModel {
         "data": data?.map((x) => x.toJson()).toList(),
       };
 }
+class IklanModel {
+  final Meta? meta;
+  final BannerEntities? data;
+
+  IklanModel({this.meta, this.data});
+
+  factory IklanModel.fromJson(Map<String, dynamic> json) => IklanModel(
+        meta: json["meta"] == null ? null : Meta.fromJson(json["meta"]),
+        data: json["data"] == null
+            ? null
+            : BannerEntities.fromJson(json["data"]),
+      );
+}
 
 class BannerEntities {
   final int? id;
