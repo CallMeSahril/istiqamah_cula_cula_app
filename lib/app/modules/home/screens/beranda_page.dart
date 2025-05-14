@@ -13,6 +13,7 @@ import 'package:istiqamah_cula_cula_app/app/modules/cart/cart_page.dart';
 import 'package:istiqamah_cula_cula_app/app/modules/detail_produk/detail_produk_page.dart';
 import 'package:istiqamah_cula_cula_app/app/modules/katagori/views/katagori_view.dart';
 import 'package:istiqamah_cula_cula_app/app/modules/lihat_semua_produk/semua_produk_page.dart';
+import 'package:video_player/video_player.dart';
 
 class BerandaPage extends StatefulWidget {
   @override
@@ -29,7 +30,7 @@ class _BerandaPageState extends State<BerandaPage> {
   List<ProductEntities> products = [];
   List<ProductCategoryEntities> categories = [];
   List<BannerEntities> bannerList = [];
-  List<BannerEntities> iklanList = [];
+  BannerEntities? iklan;
 
   @override
   void initState() {
@@ -43,7 +44,7 @@ class _BerandaPageState extends State<BerandaPage> {
     await bannerController.fetchBanners();
     await bannerController.fetchIklan();
     bannerList = bannerController.bannerList;
-    iklanList = bannerController.iklanList;
+    iklan = bannerController.iklanList.value;
     if (!mounted) return;
     setState(() {});
   }
@@ -127,8 +128,8 @@ class _BerandaPageState extends State<BerandaPage> {
                 ],
               ),
 
-// Iklan Carousel
-            if (iklanList.isNotEmpty)
+// Iklan
+            if (iklan?.image != null && iklan!.image!.endsWith('.mp4'))
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -137,35 +138,14 @@ class _BerandaPageState extends State<BerandaPage> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
-                  CarouselSlider(
-                    options: CarouselOptions(
-                      height: 150.0,
-                      autoPlay: true,
-                      viewportFraction: 0.8,
-                      enlargeCenterPage: true,
-                    ),
-                    items: iklanList.map((iklan) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: CachedNetworkImage(
-                              imageUrl: iklan.image ?? '',
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              placeholder: (context, url) =>
-                                  Center(child: CircularProgressIndicator()),
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.broken_image),
-                            ),
-                          );
-                        },
-                      );
-                    }).toList(),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: VideoIklanWidget(videoUrl: iklan!.image!),
                   ),
                   SizedBox(height: 16),
                 ],
               ),
+
             SizedBox(height: 10),
             Text(
               "Kategori",
@@ -306,5 +286,48 @@ class _BerandaPageState extends State<BerandaPage> {
         ),
       ),
     );
+  }
+}
+
+class VideoIklanWidget extends StatefulWidget {
+  final String videoUrl;
+
+  const VideoIklanWidget({Key? key, required this.videoUrl}) : super(key: key);
+
+  @override
+  State<VideoIklanWidget> createState() => _VideoIklanWidgetState();
+}
+
+class _VideoIklanWidgetState extends State<VideoIklanWidget> {
+  late VideoPlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.network(widget.videoUrl)
+      ..initialize().then((_) {
+        _controller.setLooping(true);
+        _controller.play();
+        setState(() {});
+      });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _controller.value.isInitialized
+        ? AspectRatio(
+            aspectRatio: _controller.value.aspectRatio,
+            child: VideoPlayer(_controller),
+          )
+        : Container(
+            height: 200,
+            child: Center(child: CircularProgressIndicator()),
+          );
   }
 }
