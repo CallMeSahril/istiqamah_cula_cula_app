@@ -1,0 +1,2 @@
+C:/Users/sahrilsahril/Documents/GitHub/istiqamah_cula_cula_app/android/app/.cxx/Debug/s61jki1y/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/sahrilsahril/Documents/GitHub/istiqamah_cula_cula_app/android/app/.cxx/Debug/s61jki1y/armeabi-v7a/CMakeFiles/rebuild_cache.dir

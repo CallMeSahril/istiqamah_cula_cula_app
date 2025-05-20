@@ -53,65 +53,74 @@ class _BerandaPageState extends State<BerandaPage> {
     if (!mounted) return;
     setState(() {});
   }
+void fetchBannersAndIklan() async {
+  await bannerController.fetchBanners();
+  await bannerController.fetchIklan();
+  bannerList = bannerController.bannerList;
+  iklan = bannerController.iklanList.value;
 
-  void fetchBannersAndIklan() async {
-    await bannerController.fetchBanners();
-    await bannerController.fetchIklan();
-    bannerList = bannerController.bannerList;
-    iklan = bannerController.iklanList.value;
+  if (!mounted) return;
 
-    if (!mounted) return;
+  final prefs = await SharedPreferences.getInstance();
+  // bool sudahTampil = prefs.getBool('iklanSudahDitampilkan') ?? false;
 
-    final prefs = await SharedPreferences.getInstance();
-    // bool sudahTampil = prefs.getBool('iklanSudahDitampilkan') ?? false;
-// !sudahTampil &&
-    if (iklan?.image != null && iklan!.image!.endsWith('.mp4')) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        showDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (_) => Dialog(
-            backgroundColor: Colors.transparent,
-            insetPadding: EdgeInsets.all(10),
-            child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: VideoIklanWidget(videoUrl: iklan!.image!),
+  if (iklan?.image != null && !iklan!.image!.toLowerCase().endsWith('.mp4')) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (_) => Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: EdgeInsets.all(10),
+          child: Stack(
+            children: [
+              // Gambar dengan tinggi tetap 400
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: SizedBox(
+                  height: 400,
+                  width: double.infinity,
+                  child: CachedNetworkImage(
+                    imageUrl: iklan!.image!,
+                    fit: BoxFit.contain,
+                    placeholder: (context, url) =>
+                        Center(child: CircularProgressIndicator()),
+                    errorWidget: (context, url, error) =>
+                        Icon(Icons.broken_image),
                   ),
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.black54,
-                          shape: BoxShape.circle,
-                        ),
-                        padding: EdgeInsets.all(4),
-                        child: Icon(
-                          Icons.close,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      ),
+                ),
+              ),
+              // Tombol close di pojok kanan atas gambar
+              Positioned(
+                top: 10,
+                right: 40,
+                child: GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black54,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: EdgeInsets.all(6),
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 20,
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        );
-      });
+        ),
+      );
+    });
 
-      await prefs.setBool('iklanSudahDitampilkan', true);
-    }
-
-    setState(() {});
+    await prefs.setBool('iklanSudahDitampilkan', true);
   }
+
+  setState(() {});
+}
 
   @override
   Widget build(BuildContext context) {

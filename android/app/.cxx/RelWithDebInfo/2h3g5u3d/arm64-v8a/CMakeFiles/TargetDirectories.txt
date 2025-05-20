@@ -1,0 +1,2 @@
+C:/Users/sahrilsahril/Documents/GitHub/istiqamah_cula_cula_app/android/app/.cxx/RelWithDebInfo/2h3g5u3d/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/sahrilsahril/Documents/GitHub/istiqamah_cula_cula_app/android/app/.cxx/RelWithDebInfo/2h3g5u3d/arm64-v8a/CMakeFiles/rebuild_cache.dir
