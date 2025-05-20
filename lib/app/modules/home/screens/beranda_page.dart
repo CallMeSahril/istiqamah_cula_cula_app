@@ -13,6 +13,8 @@ import 'package:istiqamah_cula_cula_app/app/modules/cart/cart_page.dart';
 import 'package:istiqamah_cula_cula_app/app/modules/detail_produk/detail_produk_page.dart';
 import 'package:istiqamah_cula_cula_app/app/modules/katagori/views/katagori_view.dart';
 import 'package:istiqamah_cula_cula_app/app/modules/lihat_semua_produk/semua_produk_page.dart';
+import 'package:istiqamah_cula_cula_app/app/modules/semua_banner/semua_banner_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
 class BerandaPage extends StatefulWidget {
@@ -40,15 +42,6 @@ class _BerandaPageState extends State<BerandaPage> {
     fetchBannersAndIklan();
   }
 
-  void fetchBannersAndIklan() async {
-    await bannerController.fetchBanners();
-    await bannerController.fetchIklan();
-    bannerList = bannerController.bannerList;
-    iklan = bannerController.iklanList.value;
-    if (!mounted) return;
-    setState(() {});
-  }
-
   void fetchProducts() async {
     products = await controller.getAllProducts();
     if (!mounted) return;
@@ -58,6 +51,65 @@ class _BerandaPageState extends State<BerandaPage> {
   void fetchCategories() async {
     categories = await categoryController.getAllCategories();
     if (!mounted) return;
+    setState(() {});
+  }
+
+  void fetchBannersAndIklan() async {
+    await bannerController.fetchBanners();
+    await bannerController.fetchIklan();
+    bannerList = bannerController.bannerList;
+    iklan = bannerController.iklanList.value;
+
+    if (!mounted) return;
+
+    final prefs = await SharedPreferences.getInstance();
+    // bool sudahTampil = prefs.getBool('iklanSudahDitampilkan') ?? false;
+// !sudahTampil &&
+    if (iklan?.image != null && iklan!.image!.endsWith('.mp4')) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (_) => Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: EdgeInsets.all(10),
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: VideoIklanWidget(videoUrl: iklan!.image!),
+                  ),
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black54,
+                          shape: BoxShape.circle,
+                        ),
+                        padding: EdgeInsets.all(4),
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      });
+
+      await prefs.setBool('iklanSudahDitampilkan', true);
+    }
+
     setState(() {});
   }
 
@@ -99,52 +151,57 @@ class _BerandaPageState extends State<BerandaPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CarouselSlider(
-                    options: CarouselOptions(
-                      height: 180.0,
-                      autoPlay: true,
-                      enlargeCenterPage: true,
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => SemuaBannerPage(banners: bannerList));
+                    },
+                    child: CarouselSlider(
+                      options: CarouselOptions(
+                        height: 180.0,
+                        autoPlay: true,
+                        enlargeCenterPage: true,
+                      ),
+                      items: bannerList.map((banner) {
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: CachedNetworkImage(
+                                imageUrl: banner.image ?? '',
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                placeholder: (context, url) =>
+                                    Center(child: CircularProgressIndicator()),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.broken_image),
+                              ),
+                            );
+                          },
+                        );
+                      }).toList(),
                     ),
-                    items: bannerList.map((banner) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: CachedNetworkImage(
-                              imageUrl: banner.image ?? '',
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              placeholder: (context, url) =>
-                                  Center(child: CircularProgressIndicator()),
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.broken_image),
-                            ),
-                          );
-                        },
-                      );
-                    }).toList(),
                   ),
                   SizedBox(height: 16),
                 ],
               ),
 
-// Iklan
-            if (iklan?.image != null && iklan!.image!.endsWith('.mp4'))
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Iklan",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: VideoIklanWidget(videoUrl: iklan!.image!),
-                  ),
-                  SizedBox(height: 16),
-                ],
-              ),
+// // Iklan
+//             if (iklan?.image != null && iklan!.image!.endsWith('.mp4'))
+//               Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Text(
+//                     "Iklan",
+//                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+//                   ),
+//                   SizedBox(height: 10),
+//                   ClipRRect(
+//                     borderRadius: BorderRadius.circular(10),
+//                     child: VideoIklanWidget(videoUrl: iklan!.image!),
+//                   ),
+//                   SizedBox(height: 16),
+//                 ],
+//               ),
 
             SizedBox(height: 10),
             Text(

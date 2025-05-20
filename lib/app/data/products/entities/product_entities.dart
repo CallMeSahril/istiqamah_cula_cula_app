@@ -32,10 +32,10 @@ class ProductEntities {
           ? []
           : List<ImageData>.from(
               json["images"]!.map((x) => ImageData.fromJson(x))),
-      price: json['price'],
-      stock: json['stock'],
+      price: int.tryParse(json['price'].toString().split('.').first) ?? 0,
+      stock: int.tryParse(json['stock'].toString()) ?? 0,
       description: json['description'],
-      categoryId: json['category_id'],
+      categoryId:int.tryParse( json['category_id'].toString()) ?? 0,
       urlPhoto: json["url_photo"],
     );
   }
