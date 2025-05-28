@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:istiqamah_cula_cula_app/app/data/orders/entities/order_entities.dart';
 import 'package:istiqamah_cula_cula_app/app/data/orders/entities/payment_method.dart';
 import 'package:istiqamah_cula_cula_app/app/data/orders/usecase/orders_usecase.dart';
+import 'package:istiqamah_cula_cula_app/app/modules/web_view/web_view_pembayaran.dart';
 
 class OrdersController extends GetxController {
   final createOrderUsecase = CreateOrderUsecase();
@@ -23,6 +24,8 @@ class OrdersController extends GetxController {
       },
       (data) {
         Get.snackbar("Berhasil", "Order dibuat dengan ID: $data");
+        print(data);
+        Get.offAll(() => WebviewPembayaranPage(url: data));
         isSuccess = true;
       },
     );

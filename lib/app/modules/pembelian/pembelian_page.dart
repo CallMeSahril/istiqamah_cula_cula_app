@@ -110,8 +110,9 @@ int get subtotal =>
             trailing:
                 Text("Lihat Semua >", style: TextStyle(color: Colors.red)),
             onTap: () async {
+              print("Selected Address: ${selectedAddress?.toJson()}");
               final result = await Get.to(() => OpsiPengirimanPage(
-                  originCityId: 1, destinationCityId: 1, weight: 1));
+                  originCityId: 235, destinationCityId: selectedAddress?.cityId ?? 0, weight: 1));
               if (result != null) {
                 setState(() {
                   selectedCourier = result['courier'];
@@ -193,7 +194,8 @@ int get subtotal =>
 
             final respone = await ordersController.createOrder(body);
             if (respone) {
-              Get.offAll(PesananSuksesPage());
+              // Get.offAll(PesananSuksesPage());
+              
             }
           },
           style: ElevatedButton.styleFrom(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:get/get.dart';
 import 'package:istiqamah_cula_cula_app/app/data/banner/model/banner_model.dart';
 
 class SemuaBannerPage extends StatelessWidget {

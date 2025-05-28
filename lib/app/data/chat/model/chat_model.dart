@@ -37,7 +37,7 @@ class ChatEntities {
 
   factory ChatEntities.fromJson(Map<String, dynamic> json) => ChatEntities(
         id: json["id"],
-        userId: json["user_id"],
+        userId: int.tryParse(json["user_id"].toString()),
         pesan: json["pesan"],
         type: json["type"],
         createdAt: json["created_at"] == null

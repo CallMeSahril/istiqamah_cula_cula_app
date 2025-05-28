@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:istiqamah_cula_cula_app/app/data/orders/entities/order_entities.dart';
-
+import 'package:istiqamah_cula_cula_app/app/modules/web_view/web_view_pembayaran.dart';
 
 class OrderDetailPage extends StatelessWidget {
   final OrderEntities order;
@@ -24,25 +25,69 @@ class OrderDetailPage extends StatelessWidget {
         children: [
           Card(
             elevation: 3,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Informasi Pesanan", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text("Informasi Pesanan",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   SizedBox(height: 12),
                   _infoRow("Tanggal Pesanan", _formatDate(order.createdAt)),
                   _infoRow("Status", order.status),
                   _infoRow("Order ID", order.merchantOrderId),
                   _infoRow("VA Number", order.vaNumber),
                   _infoRow("Total", formatter.format(order.totalAmount)),
+                  Visibility(
+                    visible: order.status == 'pending',
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.to(() => WebviewPembayaranPage(
+                                  url: order.paymentUrl!,
+                                  back: true,
+                                ));
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 14, horizontal: 32),
+                            decoration: BoxDecoration(
+                              color: Color(0xffFF2B2A),
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.red.withOpacity(0.3),
+                                  offset: Offset(0, 4),
+                                  blurRadius: 8,
+                                )
+                              ],
+                            ),
+                            child: Text(
+                              "Lanjutkan Pembayaran",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.white,
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
           SizedBox(height: 20),
-          Text("Produk Dipesan", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          Text("Produk Dipesan",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           SizedBox(height: 12),
           if (order.items != null && order.items!.isNotEmpty)
             ...order.items!.map((item) => _buildProductCard(item)).toList()
@@ -88,7 +133,8 @@ class OrderDetailPage extends StatelessWidget {
                 width: 70,
                 height: 70,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Icon(Icons.broken_image, size: 70),
+                errorBuilder: (_, __, ___) =>
+                    Icon(Icons.broken_image, size: 70),
               ),
             ),
             SizedBox(width: 12),

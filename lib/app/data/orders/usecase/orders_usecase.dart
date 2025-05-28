@@ -7,7 +7,7 @@ import 'package:istiqamah_cula_cula_app/app/data/orders/remote/orders_remote_dat
 class CreateOrderUsecase {
   final OrdersRemoteDatasource datasource = OrdersRemoteDatasource();
 
-  Future<Either<Failure, int>> call(Map<String, dynamic> body) =>
+  Future<Either<Failure, dynamic>> call(Map<String, dynamic> body) =>
       datasource.createOrder(body);
 }
 

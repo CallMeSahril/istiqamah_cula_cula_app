@@ -7,10 +7,11 @@ import 'package:istiqamah_cula_cula_app/app/data/orders/entities/payment_method.
 class OrdersRemoteDatasource {
   final ApiHelper apiHelper = ApiHelper();
 
-  Future<Either<Failure, int>> createOrder(Map<String, dynamic> body) async {
+  Future<Either<Failure, dynamic>> createOrder(Map<String, dynamic> body) async {
     try {
       final response = await apiHelper.post('/orders', data: body);
-      return Right(response.data['data']);
+      print(response.data['meta']['message']['paymentUrl']);
+      return Right(response.data['meta']['message']['paymentUrl']);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
