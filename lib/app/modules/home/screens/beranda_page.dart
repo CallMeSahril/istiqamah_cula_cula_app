@@ -53,74 +53,82 @@ class _BerandaPageState extends State<BerandaPage> {
     if (!mounted) return;
     setState(() {});
   }
-void fetchBannersAndIklan() async {
-  await bannerController.fetchBanners();
-  await bannerController.fetchIklan();
-  bannerList = bannerController.bannerList;
-  iklan = bannerController.iklanList.value;
 
-  if (!mounted) return;
+  void fetchBannersAndIklan() async {
+    await bannerController.fetchBanners();
+    await bannerController.fetchIklan();
+    bannerList = bannerController.bannerList;
+    iklan = bannerController.iklanList.value;
 
-  final prefs = await SharedPreferences.getInstance();
-  // bool sudahTampil = prefs.getBool('iklanSudahDitampilkan') ?? false;
+    if (!mounted) return;
 
-  if (iklan?.image != null && !iklan!.image!.toLowerCase().endsWith('.mp4')) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (_) => Dialog(
-          backgroundColor: Colors.transparent,
-          insetPadding: EdgeInsets.all(10),
-          child: Stack(
-            children: [
-              // Gambar dengan tinggi tetap 400
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: SizedBox(
-                  height: 400,
-                  width: double.infinity,
-                  child: CachedNetworkImage(
-                    imageUrl: iklan!.image!,
-                    fit: BoxFit.contain,
-                    placeholder: (context, url) =>
-                        Center(child: CircularProgressIndicator()),
-                    errorWidget: (context, url, error) =>
-                        Icon(Icons.broken_image),
-                  ),
-                ),
-              ),
-              // Tombol close di pojok kanan atas gambar
-              Positioned(
-                top: 10,
-                right: 40,
-                child: GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black54,
-                      shape: BoxShape.circle,
-                    ),
-                    padding: EdgeInsets.all(6),
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: 20,
+    final prefs = await SharedPreferences.getInstance();
+    // bool sudahTampil = prefs.getBool('iklanSudahDitampilkan') ?? false;
+
+    if (iklan?.image != null && !iklan!.image!.toLowerCase().endsWith('.mp4')) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (_) => Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: EdgeInsets.all(10),
+            child: Stack(
+              children: [
+                // Gambar dengan tinggi tetap 400
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: GestureDetector(
+                    onTap: () {
+                      iklan?.productId == null
+                          ? null
+                          : Get.to(DetailProdukPage(id: iklan!.productId!));
+                    },
+                    child: SizedBox(
+                      height: 400,
+                      width: double.infinity,
+                      child: CachedNetworkImage(
+                        imageUrl: iklan!.image!,
+                        fit: BoxFit.contain,
+                        placeholder: (context, url) =>
+                            Center(child: CircularProgressIndicator()),
+                        errorWidget: (context, url, error) =>
+                            Icon(Icons.broken_image),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+                // Tombol close di pojok kanan atas gambar
+                Positioned(
+                  top: 10,
+                  right: 40,
+                  child: GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black54,
+                        shape: BoxShape.circle,
+                      ),
+                      padding: EdgeInsets.all(6),
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      );
-    });
+        );
+      });
 
-    await prefs.setBool('iklanSudahDitampilkan', true);
+      await prefs.setBool('iklanSudahDitampilkan', true);
+    }
+
+    setState(() {});
   }
-
-  setState(() {});
-}
 
   @override
   Widget build(BuildContext context) {
@@ -160,21 +168,26 @@ void fetchBannersAndIklan() async {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      Get.to(() => SemuaBannerPage(banners: bannerList));
-                    },
-                    child: CarouselSlider(
-                      options: CarouselOptions(
-                        height: 180.0,
-                        autoPlay: true,
-                        enlargeCenterPage: true,
-                      ),
-                      items: bannerList.map((banner) {
-                        return Builder(
-                          builder: (BuildContext context) {
-                            return ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
+                  CarouselSlider(
+                    options: CarouselOptions(
+                      height: 180.0,
+                      autoPlay: true,
+                      enlargeCenterPage: true,
+                    ),
+                    items: bannerList.map((banner) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: GestureDetector(
+                              onTap: () {
+                                if (banner.productId != null) {
+                                  Get.to(
+                                      DetailProdukPage(id: banner.productId!));
+                                } else {
+                                  Get.to(SemuaBannerPage(banners: [banner]));
+                                }
+                              },
                               child: CachedNetworkImage(
                                 imageUrl: banner.image ?? '',
                                 fit: BoxFit.cover,
@@ -184,11 +197,11 @@ void fetchBannersAndIklan() async {
                                 errorWidget: (context, url, error) =>
                                     Icon(Icons.broken_image),
                               ),
-                            );
-                          },
-                        );
-                      }).toList(),
-                    ),
+                            ),
+                          );
+                        },
+                      );
+                    }).toList(),
                   ),
                   SizedBox(height: 16),
                 ],

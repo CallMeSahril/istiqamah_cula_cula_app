@@ -24,6 +24,7 @@ class BannerModel {
         "data": data?.map((x) => x.toJson()).toList(),
       };
 }
+
 class IklanModel {
   final Meta? meta;
   final BannerEntities? data;
@@ -32,9 +33,8 @@ class IklanModel {
 
   factory IklanModel.fromJson(Map<String, dynamic> json) => IklanModel(
         meta: json["meta"] == null ? null : Meta.fromJson(json["meta"]),
-        data: json["data"] == null
-            ? null
-            : BannerEntities.fromJson(json["data"]),
+        data:
+            json["data"] == null ? null : BannerEntities.fromJson(json["data"]),
       );
 }
 
@@ -45,7 +45,7 @@ class BannerEntities {
   final String? type;
   final DateTime? createdAt;
   final DateTime? updatedAt;
-
+  final int? productId;
   BannerEntities({
     this.id,
     this.title,
@@ -53,10 +53,10 @@ class BannerEntities {
     this.type,
     this.createdAt,
     this.updatedAt,
+    this.productId,
   });
 
-  factory BannerEntities.fromJson(Map<String, dynamic> json) =>
-      BannerEntities(
+  factory BannerEntities.fromJson(Map<String, dynamic> json) => BannerEntities(
         id: json["id"],
         title: json["title"],
         image: json["image"],
@@ -67,6 +67,7 @@ class BannerEntities {
         updatedAt: json["updated_at"] == null
             ? null
             : DateTime.parse(json["updated_at"]),
+        productId: int.parse(json["product_id"]),
       );
 
   Map<String, dynamic> toJson() => {
