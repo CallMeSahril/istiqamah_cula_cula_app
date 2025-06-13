@@ -13,6 +13,13 @@ class _CartPageState extends State<CartPage> {
   final CartController controller = Get.put(CartController());
   final formatter =
       NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
+  int getFinalPrice(product) {
+    if (product.discount != null && product.discount!.isNotEmpty) {
+      final potongan = product.discount!.first.potonganDiskon ?? 0;
+      return (product.price! * (100 - potongan)) ~/ 100;
+    }
+    return product.price!;
+  }
 
   @override
   void initState() {
@@ -69,11 +76,41 @@ class _CartPageState extends State<CartPage> {
                         Text(product.name ?? '',
                             style: TextStyle(fontWeight: FontWeight.w600)),
                         SizedBox(height: 4),
-                        Text(
-                          'IDR ${formatter.format(product.price ?? 0).replaceAll('Rp', '').trim()}',
-                          style: TextStyle(
-                              color: Colors.red, fontWeight: FontWeight.w600),
-                        ),
+                        product.discount != null && product.discount!.isNotEmpty
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    formatter
+                                        .format(product.price ?? 0)
+                                        .replaceAll('Rp', 'IDR')
+                                        .trim(),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                      decoration: TextDecoration.lineThrough,
+                                    ),
+                                  ),
+                                  SizedBox(height: 2),
+                                  Text(
+                                    formatter
+                                        .format(getFinalPrice(product))
+                                        .replaceAll('Rp', 'IDR')
+                                        .trim(),
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Text(
+                                'IDR ${formatter.format(product.price ?? 0).replaceAll('Rp', '').trim()}',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                       ],
                     ),
                   ),

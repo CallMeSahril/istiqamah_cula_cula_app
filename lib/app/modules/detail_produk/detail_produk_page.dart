@@ -21,6 +21,13 @@ class _DetailProdukPageState extends State<DetailProdukPage> {
   ProductEntities? product;
   final formatter =
       NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
+  int getFinalPrice(ProductEntities product) {
+    if (product.discount != null && product.discount!.isNotEmpty) {
+      final potongan = product.discount!.first.potonganDiskon ?? 0;
+      return (product.price! * (100 - potongan)) ~/ 100;
+    }
+    return product.price!;
+  }
 
   @override
   void initState() {
@@ -102,11 +109,37 @@ class _DetailProdukPageState extends State<DetailProdukPage> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
-            Text(
-              formatter.format(product!.price ?? 0),
-              style: TextStyle(
-                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
-            ),
+            product!.discount != null && product!.discount!.isNotEmpty
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        formatter.format(product!.price ?? 0),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                          decoration: TextDecoration.lineThrough,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        formatter.format(getFinalPrice(product!)),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
+                  )
+                : Text(
+                    formatter.format(product!.price ?? 0),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
+                  ),
             SizedBox(height: 16),
             Row(
               children: [

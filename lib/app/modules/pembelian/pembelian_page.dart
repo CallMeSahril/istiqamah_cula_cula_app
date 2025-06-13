@@ -31,9 +31,8 @@ class _PembelianPageState extends State<PembelianPage> {
   PaymentMethod? selectedPaymentMethod;
   Courier? selectedCourier;
   OngkirService? selectedService;
-int get subtotal =>
-    widget.carts.fold(0, (sum, item) => sum + ((item.product.price ?? 0) * item.quantity));
-
+  int get subtotal => widget.carts
+      .fold(0, (sum, item) => sum + (getFinalPrice(item) * item.quantity));
 
   int get layanan => int.tryParse(selectedPaymentMethod?.totalFee ?? '0') ?? 0;
   int get ongkir => selectedService?.value ?? 0;
@@ -49,6 +48,14 @@ int get subtotal =>
         });
       }
     });
+  }
+
+  int getFinalPrice(cart) {
+    if (cart.product.discount != null && cart.product.discount!.isNotEmpty) {
+      final potongan = cart.product.discount!.first.potonganDiskon ?? 0;
+      return (cart.product.price! * (100 - potongan)) ~/ 100;
+    }
+    return cart.product.price!;
   }
 
   @override
@@ -112,7 +119,9 @@ int get subtotal =>
             onTap: () async {
               print("Selected Address: ${selectedAddress?.toJson()}");
               final result = await Get.to(() => OpsiPengirimanPage(
-                  originCityId: 235, destinationCityId: selectedAddress?.cityId ?? 0, weight: 1));
+                  originCityId: 235,
+                  destinationCityId: selectedAddress?.cityId ?? 0,
+                  weight: 1));
               if (result != null) {
                 setState(() {
                   selectedCourier = result['courier'];
@@ -195,7 +204,6 @@ int get subtotal =>
             final respone = await ordersController.createOrder(body);
             if (respone) {
               // Get.offAll(PesananSuksesPage());
-              
             }
           },
           style: ElevatedButton.styleFrom(
@@ -227,13 +235,50 @@ int get subtotal =>
                 Text(cart.product.name ?? '',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 6),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(formatter.format(cart.product.price ?? 0)),
-                    Text("x${cart.quantity}"),
-                  ],
-                ),
+                cart.product.discount != null &&
+                        cart.product.discount!.isNotEmpty
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                formatter.format(cart.product.price ?? 0),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                  decoration: TextDecoration.lineThrough,
+                                ),
+                              ),
+                              SizedBox(height: 2),
+                              Text(
+                                formatter.format(getFinalPrice(cart)),
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text("x${cart.quantity}"),
+                        ],
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            formatter.format(cart.product.price ?? 0),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                          ),
+                          Text("x${cart.quantity}"),
+                        ],
+                      ),
               ],
             ),
           )

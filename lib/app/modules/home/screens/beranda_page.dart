@@ -54,6 +54,14 @@ class _BerandaPageState extends State<BerandaPage> {
     setState(() {});
   }
 
+  int getFinalPrice(ProductEntities product) {
+    if (product.discount != null && product.discount!.isNotEmpty) {
+      final potongan = product.discount!.first.potonganDiskon ?? 0;
+      return (product.price! * (100 - potongan)) ~/ 100;
+    }
+    return product.price!;
+  }
+
   void fetchBannersAndIklan() async {
     await bannerController.fetchBanners();
     await bannerController.fetchIklan();
@@ -297,7 +305,7 @@ class _BerandaPageState extends State<BerandaPage> {
                 crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
-                childAspectRatio: 3 / 4,
+                childAspectRatio: 3 / 4.5,
               ),
               itemCount: products.length > 10 ? 10 : products.length,
               itemBuilder: (context, index) {
@@ -344,14 +352,37 @@ class _BerandaPageState extends State<BerandaPage> {
                                 ),
                               ),
                               SizedBox(height: 6),
-                              Text(
-                                formatter.format(product.price ?? 0),
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.red,
+                              if (product.discount != null &&
+                                  product.discount!.isNotEmpty) ...[
+                                // Harga sebelum diskon (coret)
+                                Text(
+                                  formatter.format(product.price ?? 0),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey,
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
                                 ),
-                              ),
+                                SizedBox(height: 2),
+                                // Harga setelah diskon
+                                Text(
+                                  formatter.format(getFinalPrice(product)),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ] else ...[
+                                Text(
+                                  formatter.format(product.price ?? 0),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ],
                             ],
                           ),
                         ),
