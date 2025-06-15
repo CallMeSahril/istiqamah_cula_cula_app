@@ -59,7 +59,7 @@ class _SemuaProdukPageState extends State<SemuaProdukPage> {
                       crossAxisCount: 2,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
-                      childAspectRatio: 3 / 4,
+                      childAspectRatio: 3 / 4.5,
                     ),
                     itemCount: products.length,
                     itemBuilder: (context, index) {
@@ -101,17 +101,55 @@ class _SemuaProdukPageState extends State<SemuaProdukPage> {
                                       fontWeight: FontWeight.bold),
                                 ),
                               ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Text(
-                                  formatter.format(product.price ?? 0),
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
+                              product.discount != null &&
+                                      product.discount!.isNotEmpty
+                                  ? Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          formatter.format(product.price ?? 0),
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey,
+                                            decoration:
+                                                TextDecoration.lineThrough,
+                                          ),
+                                        ),
+                                        SizedBox(height: 2),
+                                        Text(
+                                          formatter.format(
+                                              (product.price ?? 0) -
+                                                  (product.discount!.first
+                                                          .potonganDiskon ??
+                                                      0)),
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : Text(
+                                      formatter.format(product.price ?? 0),
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                              // Padding(
+                              //   padding:
+                              //       const EdgeInsets.symmetric(horizontal: 8.0),
+                              //   child: Text(
+                              //     formatter.format(product.price ?? 0),
+                              //     style: TextStyle(
+                              //         fontSize: 14,
+                              //         color: Colors.red,
+                              //         fontWeight: FontWeight.bold),
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),
